@@ -1,0 +1,8 @@
+# IDE configs
+.vscode/
+
+# objects
+obj/
+
+# executable
+mandelbrot
