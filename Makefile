@@ -1,23 +1,24 @@
-CC := g++
-MAIN_FLAGS := -Wall -Wextra -Wpedantic -fpermissive -O2 -DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2
-ADD_FLAGS  := -Ilib/sfml/include -Llib/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system
+CC 				:= g++
+FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -O2 -DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2 \
+					-Ilib/sfml/include -Llib/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system
 
-MAIN_SRC_DIR := src
-SRC_DIRS 	 := $(MAIN_SRC_DIR)/ $(wildcard $(MAIN_SRC_DIR)/*/)
-SRC_DIRS 	 := $(SRC_DIRS:%/=%)
-MAIN_OBJ_DIR := obj
-OBJ_DIRS 	 := $(SRC_DIRS:$(MAIN_SRC_DIR)%=$(MAIN_OBJ_DIR)%)
+MAIN_SRC_DIR	:= src
+SRC_DIRS		:= $(shell find $(MAIN_SRC_DIR)/ -type d)
+SRC_DIRS		:= $(SRC_DIRS:%/=%)
+SOURCES			:= $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
+SOURCES  		:= $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
 
-SOURCES  := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
-INCLUDES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.h))
-OBJECTS  := $(SOURCES:$(MAIN_SRC_DIR)/%.cpp=$(MAIN_OBJ_DIR)/%.o)
-BIN      := mandelbrot
+INCLUDES 		:= $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.h))
 
-DOCS_NAME := docs_config
+MAIN_OBJ_DIR	:= obj
+OBJ_DIRS 		:= $(SRC_DIRS:$(MAIN_SRC_DIR)%=$(MAIN_OBJ_DIR)%)
+OBJECTS  		:= $(SOURCES:$(MAIN_SRC_DIR)/%.cpp=$(MAIN_OBJ_DIR)/%.o)
 
-I_FLAGS    := -I$(MAIN_SRC_DIR)
-COMP_FLAGS := $(MAIN_FLAGS) $(ADD_FLAGS) $(I_FLAGS)
-LINK_FLAGS := $(MAIN_FLAGS) $(ADD_FLAGS)
+BIN      		:= mandelbrot
+
+I_FLAGS    		:= -I$(MAIN_SRC_DIR)
+COMP_FLAGS 		:= $(FLAGS) $(I_FLAGS)
+LINK_FLAGS 		:= $(FLAGS)
 
 all: $(BIN)
 
@@ -32,9 +33,6 @@ $(OBJ_DIRS): %:
 
 run: $(BIN)
 	@./$(BIN)
-
-docs:
-	@doxygen $(DOCS_NAME)
 
 
 clean: clean_obj clean_bin
