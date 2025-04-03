@@ -1,19 +1,19 @@
 #include <SFML/Graphics.hpp>
 
-const char* const   WINDOW_NAME             = "Mandelbrot graph";
+const char* const   WINDOW_NAME         = "Mandelbrot graph";
 
-const unsigned int  BITS_PER_PIXEL          = 24;
-const unsigned int  WINDOW_HEIGHT           = 600;
-const unsigned int  WINDOW_WIDTH            = 600;
+const unsigned int  BITS_PER_PIXEL      = 24;
+const unsigned int  WINDOW_HEIGHT       = 600;
+const unsigned int  WINDOW_WIDTH        = 600;
 
-const int           DEFAULT_WINDOW_CENTER_X = WINDOW_WIDTH / 2 + 100;
-const int           DEFAULT_WINDOW_CENTER_Y = WINDOW_HEIGHT / 2;
-const float         DEFAULT_ZOOM            = 0.0066666;
-const int           MOVE_CENTER_COEF        = 100;
-const float         ZOOM_COEF               = 2.0;
+const float         DEFAULT_SHIFT_X     = -2.0;
+const float         DEFAULT_SHIFT_Y     = -2.0;
+const float         DEFAULT_ZOOM        = 4.0;
+const float         MOVE_CENTER_COEF    = 0.25;
+const float         ZOOM_COEF           = 2.0;
 
-const float         MAX_DISTANCE_QUAD       = 100.0;
-const int           MAX_DOT_TRIES           = 256;
+const float         MAX_DISTANCE_QUAD   = 100.0;
+const int           MAX_DOT_TRIES       = 256;
 
 
 int main()
@@ -22,9 +22,9 @@ int main()
     unsigned int window_height  = WINDOW_HEIGHT;
     unsigned int bits_per_pixel = BITS_PER_PIXEL;
 
-    int     window_center_x = DEFAULT_WINDOW_CENTER_X;
-    int     window_center_y = DEFAULT_WINDOW_CENTER_Y;
-    float   zoom            = DEFAULT_ZOOM;
+    float   x_shift = DEFAULT_SHIFT_X;
+    float   y_shift = DEFAULT_SHIFT_Y;
+    float   zoom    = DEFAULT_ZOOM;
 
     sf::Vector2u        window_size (window_width, window_height);
     sf::VideoMode       video_mode  (window_size, bits_per_pixel);
@@ -47,20 +47,40 @@ int main()
                 const auto* key_pressed = event->getIf<sf::Event::KeyPressed>();
 
                 if (key_pressed->scancode == sf::Keyboard::Scan::Left)
-                    window_center_x += MOVE_CENTER_COEF * DEFAULT_ZOOM / zoom;
+                    x_shift -= MOVE_CENTER_COEF * zoom;
                 else if (key_pressed->scancode == sf::Keyboard::Scan::Right)
-                    window_center_x -= MOVE_CENTER_COEF * DEFAULT_ZOOM / zoom;
+                    x_shift += MOVE_CENTER_COEF * zoom;
                 else if (key_pressed->scancode == sf::Keyboard::Scan::Up)
-                    window_center_y += MOVE_CENTER_COEF * DEFAULT_ZOOM / zoom;
+                    y_shift -= MOVE_CENTER_COEF * zoom;
                 else if (key_pressed->scancode == sf::Keyboard::Scan::Down)
-                    window_center_y -= MOVE_CENTER_COEF * DEFAULT_ZOOM / zoom;
+                    y_shift += MOVE_CENTER_COEF * zoom;
 
                 else if (key_pressed->scancode == sf::Keyboard::Scan::Equal)
+                {
+                    // x_shift = -((float) WINDOW_WIDTH  / 2 / window_height * zoom + x_shift);
+                    // y_shift = -((float) WINDOW_HEIGHT / 2 / window_width * zoom + y_shift);
+                    printf("Old: %f %f\n",
+                           -((float) 0.5 * zoom + x_shift),
+                           -((float) 0.5 * zoom + y_shift));
                     zoom /= ZOOM_COEF;
+                    printf("New: %f %f\n",
+                           -((float) 0.5 * zoom + x_shift),
+                           -((float) 0.5 * zoom + y_shift));
+                }
                 else if (key_pressed->scancode == sf::Keyboard::Scan::Hyphen)
+                {
+                    // x_shift = -((float) WINDOW_WIDTH  / 2 / window_height * zoom + x_shift);
+                    // y_shift = -((float) WINDOW_HEIGHT / 2 / window_width * zoom + y_shift);
+                    printf("Old: %f %f\n",
+                           -((float) 0.5 * zoom + x_shift),
+                           -((float) 0.5 * zoom + y_shift));
                     zoom *= ZOOM_COEF;
+                    printf("New: %f %f\n",
+                           -((float) 0.5 * zoom + x_shift),
+                           -((float) 0.5 * zoom + y_shift));
+                }
 
-                printf("%d %d %f\n", window_center_x, window_center_y, zoom);
+                printf("%f %f %f\n", x_shift, y_shift, zoom);
             }
 
             event = window.pollEvent();
@@ -68,10 +88,12 @@ int main()
 
         for (unsigned int y = 0; y < window_width; ++y)
         {
-            float y0 = ((float) y - window_center_y) * zoom;
+            float y0 = (float) y / window_width * zoom + y_shift;
             for (unsigned int x = 0; x < window_height; ++x)
             {
-                float x0 = ((float) x - window_center_x) * zoom;
+                float x0 = (float) x / window_height * zoom + x_shift;
+                // printf("x = %d, y = %d, x0 = %f, y0 = %f\n", x, y, x0, y0);
+
                 float x1 = x0;
                 float y1 = y0;
 
