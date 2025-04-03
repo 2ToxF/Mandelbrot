@@ -1,19 +1,21 @@
 #include <SFML/Graphics.hpp>
 
-const char* const   WINDOW_NAME         = "Mandelbrot graph";
+const char* const   WINDOW_NAME             = "Mandelbrot graph";
 
-const unsigned int  BITS_PER_PIXEL      = 24;
-const unsigned int  WINDOW_HEIGHT       = 600;
-const unsigned int  WINDOW_WIDTH        = 600;
+const unsigned int  BITS_PER_PIXEL          = 24;
+const unsigned int  WINDOW_HEIGHT           = 600;
+const unsigned int  WINDOW_WIDTH            = 600;
 
-const float         DEFAULT_SHIFT_X     = -2.0;
-const float         DEFAULT_SHIFT_Y     = -2.0;
-const float         DEFAULT_ZOOM        = 4.0;
-const float         MOVE_CENTER_COEF    = 0.25;
-const float         ZOOM_COEF           = 2.0;
+const float         DEFAULT_SHIFT_X         = -2.5;
+const float         DEFAULT_SHIFT_Y         = -2.0;
+const float         DEFAULT_ZOOM            = 4.0;
+const float         MOVE_CENTER_COEF        = 0.25;
+const float         ZOOM_COEF               = 2.0;
+const float         ZOOM_DOWN_SHIFT_COEF    = -0.5;
+const float         ZOOM_UP_SHIFT_COEF      = 0.25;
 
-const float         MAX_DISTANCE_QUAD   = 100.0;
-const int           MAX_DOT_TRIES       = 256;
+const float         MAX_DISTANCE_QUAD       = 100.0;
+const int           MAX_DOT_TRIES           = 256;
 
 
 int main()
@@ -57,30 +59,16 @@ int main()
 
                 else if (key_pressed->scancode == sf::Keyboard::Scan::Equal)
                 {
-                    // x_shift = -((float) WINDOW_WIDTH  / 2 / window_height * zoom + x_shift);
-                    // y_shift = -((float) WINDOW_HEIGHT / 2 / window_width * zoom + y_shift);
-                    printf("Old: %f %f\n",
-                           -((float) 0.5 * zoom + x_shift),
-                           -((float) 0.5 * zoom + y_shift));
+                    x_shift = ZOOM_UP_SHIFT_COEF * zoom + x_shift;
+                    y_shift = ZOOM_UP_SHIFT_COEF * zoom + y_shift;
                     zoom /= ZOOM_COEF;
-                    printf("New: %f %f\n",
-                           -((float) 0.5 * zoom + x_shift),
-                           -((float) 0.5 * zoom + y_shift));
                 }
                 else if (key_pressed->scancode == sf::Keyboard::Scan::Hyphen)
                 {
-                    // x_shift = -((float) WINDOW_WIDTH  / 2 / window_height * zoom + x_shift);
-                    // y_shift = -((float) WINDOW_HEIGHT / 2 / window_width * zoom + y_shift);
-                    printf("Old: %f %f\n",
-                           -((float) 0.5 * zoom + x_shift),
-                           -((float) 0.5 * zoom + y_shift));
+                    x_shift = ZOOM_DOWN_SHIFT_COEF * zoom + x_shift;
+                    y_shift = ZOOM_DOWN_SHIFT_COEF * zoom + y_shift;
                     zoom *= ZOOM_COEF;
-                    printf("New: %f %f\n",
-                           -((float) 0.5 * zoom + x_shift),
-                           -((float) 0.5 * zoom + y_shift));
                 }
-
-                printf("%f %f %f\n", x_shift, y_shift, zoom);
             }
 
             event = window.pollEvent();
