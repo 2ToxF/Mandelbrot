@@ -1,14 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include <sys/time.h>
 
-#include "calc/mandelbrot.h"
-#include "window/window.h"
+#include "mandelbrot.h"
+#include "window.h"
 
 const char* const   WINDOW_NAME             = "Mandelbrot graph";
 
 const unsigned int  BITS_PER_PIXEL          = 24;
-const unsigned int  WINDOW_HEIGHT           = 600;
-const unsigned int  WINDOW_WIDTH            = 600;
+const unsigned int  WINDOW_HEIGHT           = 512;
+const unsigned int  WINDOW_WIDTH            = 512;
 
 const float         DEFAULT_SHIFT_X         = -2.5;
 const float         DEFAULT_SHIFT_Y         = -2.0;
@@ -22,7 +22,7 @@ const int           MICROSEC_TO_SEC         = 1000000;
 
 static void     CheckEvents         (sf::RenderWindow* window, MandelbrotInfo* data);
 static void     DrawDots            (sf::Image* image, int* arr_iters);
-static double   GetMandelbrotTime   (MandelbrotInfo* data);
+static double   GetMandelbrotTime   (MandelbrotInfo* data, void (*CalcMandelbrotFunc)(MandelbrotInfo* data));
 
 
 static void CheckEvents(sf::RenderWindow* window, MandelbrotInfo* data)
@@ -105,7 +105,7 @@ void DrawMandelbrot()
     {
         CheckEvents(&window, &data);
 
-        double fps = GetMandelbrotTime(&data);
+        double fps = GetMandelbrotTime(&data, CalcMandelbrotWithColors);
         printf("%lf\n", fps);
 
         DrawDots(&image, data.arr_iters);
@@ -125,12 +125,12 @@ void DrawMandelbrot()
 }
 
 
-static double GetMandelbrotTime(MandelbrotInfo* data)
+static double GetMandelbrotTime(MandelbrotInfo* data, void (*CalcMandelbrotFunc)(MandelbrotInfo* data))
 {
     struct timeval start_time = {};
     gettimeofday(&start_time, NULL);
 
-    CalcMandelbrot(data);
+    CalcMandelbrotFunc(data);
 
     struct timeval end_time = {};
     gettimeofday(&end_time, NULL);

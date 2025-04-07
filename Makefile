@@ -16,8 +16,8 @@ OBJECTS  		:= $(SOURCES:$(MAIN_SRC_DIR)/%.cpp=$(MAIN_OBJ_DIR)/%.o)
 
 BIN      		:= mandelbrot
 
-I_FLAGS    		:= -I$(MAIN_SRC_DIR)
-COMP_FLAGS 		:= $(FLAGS) $(I_FLAGS)
+I_FLAGS    		:= $(SRC_DIRS:%=-I%)
+COMP_FLAGS 		:= $(FLAGS) $(I_FLAGS) $(add_flags)
 LINK_FLAGS 		:= $(FLAGS)
 
 all: $(BIN)
