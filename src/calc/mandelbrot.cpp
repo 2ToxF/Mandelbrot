@@ -3,6 +3,8 @@
 
 #include "arr_ops.h"
 #include "mandelbrot.h"
+#include <cstdlib>
+
 
 const float MAX_DISTANCE_QUAD = 100.0;
 
@@ -49,30 +51,26 @@ const float MAX_DISTANCE_QUAD = 100.0;
     {
         for (unsigned int y = 0; y < data->window_width; ++y)
         {
-            float yf = (float) y;
+            float yf = (float) y / data->window_width * data->zoom + data->y_shift;
             float y0[ARR_SIZE] = {yf, yf, yf, yf};
-            ArrDivConst(y0, y0, ARR_SIZE, data->window_width);
-            ArrMulConst(y0, y0, ARR_SIZE, data->zoom);
-            ArrAddConst(y0, y0, ARR_SIZE, data->y_shift);
 
-            for (unsigned int x = 0; x < data->window_height / ARR_SIZE; ++x)
+            for (unsigned int x = 0; x < data->window_height; x += ARR_SIZE)
             {
-                float xf = (float) x*ARR_SIZE;
+                float xf = (float) x;
                 float x0[ARR_SIZE] = {xf, xf+1, xf+2, xf+3};
-                ArrDivConst(x0, x0, ARR_SIZE, data->window_height);
+                ArrDivConst(x0, x0, ARR_SIZE, (float) data->window_height);
                 ArrMulConst(x0, x0, ARR_SIZE, data->zoom);
                 ArrAddConst(x0, x0, ARR_SIZE, data->x_shift);
 
-                float x1[ARR_SIZE] = {}; memcpy(x1, x0, ARR_SIZE*sizeof(float));
-                float y1[ARR_SIZE] = {}; memcpy(y1, y0, ARR_SIZE*sizeof(float));
+                float x1[ARR_SIZE]; memcpy(x1, x0, ARR_SIZE*sizeof(float));
+                float y1[ARR_SIZE]; memcpy(y1, y0, ARR_SIZE*sizeof(float));
 
-                int n[ARR_SIZE] = {};
+                int n[ARR_SIZE] = {0, 0, 0, 0};
                 for (int i = 0; i < MAX_DOT_TRIES; ++i)
                 {
                     float x1_quad[ARR_SIZE]; ArrMulArr(x1_quad, x1,    x1,    ARR_SIZE);
                     float y1_quad[ARR_SIZE]; ArrMulArr(y1_quad, y1,    y1,    ARR_SIZE);
                     float x1_y1  [ARR_SIZE]; ArrMulArr(x1_y1,   x1,    y1,    ARR_SIZE);
-                    float dx1_y1 [ARR_SIZE]; ArrAddArr(x1_y1,   x1_y1, x1_y1, ARR_SIZE);
 
                     float x1q_plus_y1q[ARR_SIZE]; ArrAddArr(x1q_plus_y1q, x1_quad, y1_quad, ARR_SIZE);
                     int   cmp_quads[ARR_SIZE];    ArrLtConst(cmp_quads, x1q_plus_y1q, ARR_SIZE, MAX_DISTANCE_QUAD);
@@ -82,15 +80,16 @@ const float MAX_DISTANCE_QUAD = 100.0;
                         break;
 
                     ArrAndConst(cmp_quads, cmp_quads, ARR_SIZE, 1);
-                    ArrAddArrInt(n, n, cmp_quads, ARR_SIZE);
+                    ArrAddArr(n, n, cmp_quads, ARR_SIZE);
 
                     float x1_sub_x2[ARR_SIZE]; ArrSubArr(x1_sub_x2, x1_quad, y1_quad, ARR_SIZE);
+                    float dx1_y1 [ARR_SIZE]; ArrAddArr(dx1_y1,   x1_y1, x1_y1, ARR_SIZE);
                     ArrAddArr(x1, x1_sub_x2, x0, ARR_SIZE);
 
                     ArrAddArr(y1, dx1_y1, y0, ARR_SIZE);
                 }
 
-                memcpy(data->arr_iters + y*data->window_width + x * ARR_SIZE, n, ARR_SIZE*sizeof(int));
+                memcpy(data->arr_iters + y*data->window_width + x, n, ARR_SIZE*sizeof(int));
             }
         }
     }
