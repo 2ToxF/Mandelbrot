@@ -1,6 +1,5 @@
-CC 				:= 	g++
-FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 -O3 \
-					# -DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2
+CC 				:= 	$(compiler)
+FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 \
 
 MAIN_SRC_DIR	:= src
 SRC_DIRS		:= $(shell find $(MAIN_SRC_DIR)/ -type d)
@@ -14,7 +13,7 @@ MAIN_OBJ_DIR	:= obj
 OBJ_DIRS 		:= $(SRC_DIRS:$(MAIN_SRC_DIR)%=$(MAIN_OBJ_DIR)%)
 OBJECTS  		:= $(SOURCES:$(MAIN_SRC_DIR)/%.cpp=$(MAIN_OBJ_DIR)/%.o)
 
-BIN      		:= mandelbrot
+BIN      		:= mandelbrot.out
 
 I_FLAGS    		:= $(SRC_DIRS:%=-I%)
 COMP_FLAGS 		:= $(FLAGS) $(I_FLAGS) $(add_flags)
@@ -38,7 +37,7 @@ run: $(BIN)
 clean: clean_obj clean_bin
 
 clean_obj:
-	-rm -r $(MAIN_OBJ_DIR)/*
+	@-rm -r $(MAIN_OBJ_DIR)/*
 
 clean_bin:
-	-rm $(BIN)
+	@-rm $(BIN)
