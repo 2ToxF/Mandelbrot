@@ -80,7 +80,7 @@ const float MAX_DISTANCE_QUAD = 100.0;
                         break;
 
                     ArrAndConst(cmp_quads, cmp_quads, ARR_SIZE, 1);
-                    ArrAddArr(n, n, cmp_quads, ARR_SIZE);
+                    ArrAddArrInt(n, n, cmp_quads, ARR_SIZE);
 
                     float x1_sub_x2[ARR_SIZE]; ArrSubArr(x1_sub_x2, x1_quad, y1_quad, ARR_SIZE);
                     float dx1_y1 [ARR_SIZE]; ArrAddArr(dx1_y1,   x1_y1, x1_y1, ARR_SIZE);
