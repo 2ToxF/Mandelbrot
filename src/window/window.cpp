@@ -2,18 +2,14 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+#include "global_consts.h"
 #include "mandelbrot.h"
 #include "window.h"
 
 const char* const   WINDOW_NAME             = "Mandelbrot graph";
 
 const unsigned int  BITS_PER_PIXEL          = 24;
-const unsigned int  WINDOW_HEIGHT           = 512;
-const unsigned int  WINDOW_WIDTH            = 512;
 
-const float         DEFAULT_SHIFT_X         = -2.5;
-const float         DEFAULT_SHIFT_Y         = -2.0;
-const float         DEFAULT_ZOOM            = 4.0;
 const float         MOVE_CENTER_COEF        = 0.25;
 const float         ZOOM_COEF               = 2.0;
 const float         ZOOM_DOWN_SHIFT_COEF    = -0.5;
@@ -24,6 +20,8 @@ const int           MICROSEC_TO_SEC         = 1000000;
 static void     CheckEvents         (sf::RenderWindow* window, MandelbrotInfo* data);
 static void     DrawDots            (sf::Image* image, int* arr_iters);
 static double   GetMandelbrotTime   (MandelbrotInfo* data, void (*CalcMandelbrotFunc)(MandelbrotInfo* data));
+static void     ZoomDown            (MandelbrotInfo* data);
+static void     ZoomUp              (MandelbrotInfo* data);
 
 
 static void CheckEvents(sf::RenderWindow* window, MandelbrotInfo* data)
@@ -48,17 +46,9 @@ static void CheckEvents(sf::RenderWindow* window, MandelbrotInfo* data)
                 data->y_shift += MOVE_CENTER_COEF * data->zoom;
 
             else if (key_pressed->scancode == sf::Keyboard::Scan::Equal)
-            {
-                data->x_shift = ZOOM_UP_SHIFT_COEF * data->zoom + data->x_shift;
-                data->y_shift = ZOOM_UP_SHIFT_COEF * data->zoom + data->y_shift;
-                data->zoom /= ZOOM_COEF;
-            }
+                ZoomUp(data);
             else if (key_pressed->scancode == sf::Keyboard::Scan::Hyphen)
-            {
-                data->x_shift = ZOOM_DOWN_SHIFT_COEF * data->zoom + data->x_shift;
-                data->y_shift = ZOOM_DOWN_SHIFT_COEF * data->zoom + data->y_shift;
-                data->zoom *= ZOOM_COEF;
-            }
+                ZoomDown(data);
         }
 
         event = window->pollEvent();
@@ -138,4 +128,20 @@ static double GetMandelbrotTime(MandelbrotInfo* data, void (*CalcMandelbrotFunc)
 
     return 1.0 / (((double) end_time.tv_sec - end_time.tv_sec) +
                   ((double) end_time.tv_usec - start_time.tv_usec) / MICROSEC_TO_SEC);
+}
+
+
+static void ZoomDown(MandelbrotInfo* data)
+{
+    data->x_shift = ZOOM_DOWN_SHIFT_COEF * data->zoom + data->x_shift;
+    data->y_shift = ZOOM_DOWN_SHIFT_COEF * data->zoom + data->y_shift;
+    data->zoom *= ZOOM_COEF;
+}
+
+
+static void ZoomUp(MandelbrotInfo* data)
+{
+    data->x_shift = ZOOM_UP_SHIFT_COEF * data->zoom + data->x_shift;
+    data->y_shift = ZOOM_UP_SHIFT_COEF * data->zoom + data->y_shift;
+    data->zoom /= ZOOM_COEF;
 }

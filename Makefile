@@ -1,7 +1,6 @@
-CC 				:= g++
-FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 -Ofast \
-					-Ilib/sfml/include -Llib/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system \
-					-DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2
+CC 				:= 	g++
+FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 -O3 \
+					# -DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2
 
 MAIN_SRC_DIR	:= src
 SRC_DIRS		:= $(shell find $(MAIN_SRC_DIR)/ -type d)
@@ -19,7 +18,7 @@ BIN      		:= mandelbrot
 
 I_FLAGS    		:= $(SRC_DIRS:%=-I%)
 COMP_FLAGS 		:= $(FLAGS) $(I_FLAGS) $(add_flags)
-LINK_FLAGS 		:= $(FLAGS)
+LINK_FLAGS 		:= $(FLAGS) -Ilib/sfml/include -Llib/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system
 
 all: $(BIN)
 
@@ -33,7 +32,7 @@ $(OBJ_DIRS): %:
 	@mkdir $@
 
 run: $(BIN)
-	@./$(BIN)
+	@./$(BIN) $(run_flags)
 
 
 clean: clean_obj clean_bin

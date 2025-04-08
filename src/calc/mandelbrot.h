@@ -1,6 +1,8 @@
 #ifndef MANDELBROT_H
 #define MANDELBROT_H
 
+#include <stdint.h>
+
 const int MAX_DOT_TRIES = 256;
 
 typedef struct __MandelbrotInfo
@@ -15,7 +17,7 @@ typedef struct __MandelbrotInfo
     int* arr_iters;
 } MandelbrotInfo;
 
-void CalcMandelbrot             (MandelbrotInfo* data);
-void CalcMandelbrotWithColors   (MandelbrotInfo* data);
+uint64_t    CalcMandelbrotWithTime  (MandelbrotInfo* data);
+void        CalcMandelbrotWithColors(MandelbrotInfo* data);
 
 #endif //MANDELBROT_H
