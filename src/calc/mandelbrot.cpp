@@ -7,7 +7,7 @@
 #include "global_consts.h"
 #include "mandelbrot.h"
 
-const float MAX_DISTANCE_QUAD = 100.0;
+const float MAX_DISTANCE_QUAD = 4.0;
 
 
 #ifdef CALC_NO_OPT
