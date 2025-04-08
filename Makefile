@@ -1,6 +1,7 @@
 CC 				:= g++
-FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -O3 -Ilib/sfml/include -Llib/sfml/lib \
-					-lsfml-graphics -lsfml-window -lsfml-system -DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2
+FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 -Ofast \
+					-Ilib/sfml/include -Llib/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system \
+					-DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2
 
 MAIN_SRC_DIR	:= src
 SRC_DIRS		:= $(shell find $(MAIN_SRC_DIR)/ -type d)
