@@ -1,5 +1,5 @@
 CC 				:= g++
-FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 -mavx512f -Ofast \
+FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 -Ofast \
 					-Ilib/sfml/include -Llib/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system \
 					-DDEBUG -g -fsanitize=address -D_FORTIFY_SOURCE=2
 
