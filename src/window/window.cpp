@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <stdlib.h>
 #include <sys/time.h>
 
 #include "mandelbrot.h"
