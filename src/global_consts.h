@@ -1,11 +1,6 @@
 #ifndef GLOBAL_CONSTS_H
 #define GLOBAL_CONSTS_H
 
-// #define CALC_NO_OPT
-// #define CALC_ARR_OPT
-// #define CALC_INTR128_OPT
-// #define CALC_INTR256_OPT
-
 const unsigned int  WINDOW_HEIGHT   = 512;
 const unsigned int  WINDOW_WIDTH    = 512;
 

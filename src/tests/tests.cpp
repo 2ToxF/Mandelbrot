@@ -16,5 +16,5 @@ void RunTestsMandelbrot(int tests_number)
 
     printf("%d\n", tests_number);
     for (int i = 0; i < tests_number; ++i)
-        printf("%d %lu\n", i, CalcMandelbrotWithTime(&data));
+        printf("%lu\n", CalcMandelbrotWithTime(&data));
 }
