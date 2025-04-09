@@ -37,7 +37,7 @@ run: $(BIN)
 clean: clean_obj clean_bin
 
 clean_obj:
-	@-rm -r $(MAIN_OBJ_DIR)/*
+	@-rm -r $(MAIN_OBJ_DIR)/
 
 clean_bin:
 	@-rm $(BIN)

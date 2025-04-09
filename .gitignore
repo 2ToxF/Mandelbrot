@@ -6,3 +6,6 @@ obj/
 
 # executable
 mandelbrot
+
+# other
+tests_res/
