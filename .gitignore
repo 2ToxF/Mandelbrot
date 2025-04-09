@@ -5,7 +5,7 @@
 obj/
 
 # executable
-mandelbrot
+*.out
 
 # other
 tests_res/
