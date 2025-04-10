@@ -11,14 +11,12 @@ const float MAX_DISTANCE_QUAD = 4.0;
 
 
 #ifdef CALC_NO_OPT
-    #define CALC_AND_ADD_CODE(__begin_code__, __end_code__)                                 \
+    #define CALC_AND_ADD_CODE(__code_for_saving_colors__)                                   \
         for (unsigned int y = 0; y < data->window_width; ++y)                               \
         {                                                                                   \
             float y0 = (float) y / data->window_width * data->zoom + data->y_shift;         \
             for (unsigned int x = 0; x < data->window_height; ++x)                          \
             {                                                                               \
-                __begin_code__                                                              \
-                                                                                            \
                 float x0 = (float) x / data->window_height * data->zoom + data->x_shift;    \
                                                                                             \
                 float x1 = x0;                                                              \
@@ -38,22 +36,14 @@ const float MAX_DISTANCE_QUAD = 4.0;
                     y1 = 2*x1_y1 + y0;                                                      \
                 }                                                                           \
                                                                                             \
-                __end_code__                                                                \
+                __code_for_saving_colors__                                                  \
             }                                                                               \
         }
 
 
-    uint64_t CalcMandelbrotWithTime(MandelbrotInfo* data)
-    {
-        uint64_t sum_time = 0;
-        CALC_AND_ADD_CODE(uint64_t start_time = __rdtsc();, sum_time += __rdtsc() - start_time;)
-        return sum_time;
-    }
-
-
     void CalcMandelbrotWithColors(MandelbrotInfo* data)
     {
-        CALC_AND_ADD_CODE({}, {*(data->arr_iters + y*data->window_width + x) = n;})
+        CALC_AND_ADD_CODE({*(data->arr_iters + y*data->window_width + x) = n;})
     }
 #endif //CALC_NO_OPT
 
@@ -61,7 +51,7 @@ const float MAX_DISTANCE_QUAD = 4.0;
 #ifdef CALC_ARR_OPT
     const int ARR_SIZE = 4;
 
-    #define CALC_AND_ADD_CODE(__begin_code__, __end_code__)                                                         \
+    #define CALC_AND_ADD_CODE(__code_for_saving_colors__)                                                           \
         for (unsigned int y = 0; y < data->window_width; ++y)                                                       \
         {                                                                                                           \
             float yf = (float) y / data->window_width * data->zoom + data->y_shift;                                 \
@@ -69,8 +59,6 @@ const float MAX_DISTANCE_QUAD = 4.0;
                                                                                                                     \
             for (unsigned int x = 0; x < data->window_height; x += ARR_SIZE)                                        \
             {                                                                                                       \
-                __begin_code__                                                                                      \
-                                                                                                                    \
                 float xf = (float) x;                                                                               \
                 float x0[ARR_SIZE] = {xf, xf+1, xf+2, xf+3};                                                        \
                 ArrDivConst(x0, x0, ARR_SIZE, (float) data->window_height);                                         \
@@ -104,22 +92,14 @@ const float MAX_DISTANCE_QUAD = 4.0;
                     ArrAddArr(y1, dx1_y1, y0, ARR_SIZE);                                                            \
                 }                                                                                                   \
                                                                                                                     \
-                __end_code__                                                                                        \
+                __code_for_saving_colors__                                                                          \
             }                                                                                                       \
         }
 
 
-    uint64_t CalcMandelbrotWithTime(MandelbrotInfo* data)
-    {
-        uint64_t sum_time = 0;
-        CALC_AND_ADD_CODE(uint64_t start_time = __rdtsc();, sum_time += __rdtsc() - start_time;)
-        return sum_time;
-    }
-
-
     void CalcMandelbrotWithColors(MandelbrotInfo* data)
     {
-        CALC_AND_ADD_CODE({}, {memcpy(data->arr_iters + y*data->window_width + x, iters, ARR_SIZE*sizeof(int));})
+        CALC_AND_ADD_CODE({memcpy(data->arr_iters + y*data->window_width + x, iters, ARR_SIZE*sizeof(int));})
     }
 #endif //CALC_ARR_OPT
 
@@ -130,7 +110,7 @@ const float MAX_DISTANCE_QUAD = 4.0;
     __m128i ones                = _mm_set1_epi32(1);
     __m128  x_add               = _mm_set_ps(3.f, 2.f, 1.f, 0.f);
 
-    #define CALC_AND_ADD_CODE(__begin_code__, __end_code__)                                             \
+    #define CALC_AND_ADD_CODE(__code_for_saving_colors__)                                               \
         for (unsigned int y = 0; y < data->window_width; ++y)                                           \
         {                                                                                               \
             float yf = (float) y / data->window_width * data->zoom + data->y_shift;                     \
@@ -138,8 +118,6 @@ const float MAX_DISTANCE_QUAD = 4.0;
                                                                                                         \
             for (unsigned int x = 0; x < data->window_height; x += INTR_SIZE_BYTES)                     \
             {                                                                                           \
-                __begin_code__                                                                          \
-                                                                                                        \
                 float xf = (float) x;                                                                   \
                 __m128  x0 = _mm_add_ps(_mm_set1_ps(xf), x_add);                                        \
                         x0 = _mm_div_ps(x0, _mm_set1_ps((float) data->window_height));                  \
@@ -171,22 +149,14 @@ const float MAX_DISTANCE_QUAD = 4.0;
                     y1 = _mm_add_ps(dx1_y1,    y0);                                                     \
                 }                                                                                       \
                                                                                                         \
-                __end_code__                                                                            \
+                __code_for_saving_colors__                                                              \
             }                                                                                           \
         }
 
 
-    uint64_t CalcMandelbrotWithTime(MandelbrotInfo* data)
-    {
-        uint64_t sum_time = 0;
-        CALC_AND_ADD_CODE(uint64_t start_time = __rdtsc();, sum_time += __rdtsc() - start_time;)
-        return sum_time;
-    }
-
-
     void CalcMandelbrotWithColors(MandelbrotInfo* data)
     {
-        CALC_AND_ADD_CODE({}, {memcpy(data->arr_iters + y*data->window_width + x, &iters, sizeof(__m128i));})
+        CALC_AND_ADD_CODE({memcpy(data->arr_iters + y*data->window_width + x, &iters, sizeof(__m128i));})
     }
 #endif //CALC_INTR128_OPT
 
@@ -197,7 +167,7 @@ const float MAX_DISTANCE_QUAD = 4.0;
     __m256i ones                = _mm256_set1_epi32(1);
     __m256  x_add               = _mm256_set_ps(7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f, 0.f);
 
-    #define CALC_AND_ADD_CODE(__begin_code__, __end_code__)                                                     \
+    #define CALC_AND_ADD_CODE(__code_for_saving_colors__)                                                       \
         for (unsigned int y = 0; y < data->window_width; ++y)                                                   \
         {                                                                                                       \
             float yf = (float) y / data->window_width * data->zoom + data->y_shift;                             \
@@ -205,8 +175,6 @@ const float MAX_DISTANCE_QUAD = 4.0;
                                                                                                                 \
             for (unsigned int x = 0; x < data->window_height; x += INTR_SIZE_BYTES)                             \
             {                                                                                                   \
-                __begin_code__                                                                                  \
-                                                                                                                \
                 float xf = (float) x;                                                                           \
                 __m256  x0 = _mm256_add_ps(_mm256_set1_ps(xf), x_add);                                          \
                         x0 = _mm256_div_ps(x0, _mm256_set1_ps((float) data->window_height));                    \
@@ -238,21 +206,19 @@ const float MAX_DISTANCE_QUAD = 4.0;
                     y1 = _mm256_add_ps(dx1_y1,    y0);                                                          \
                 }                                                                                               \
                                                                                                                 \
-                __end_code__                                                                                    \
+                __code_for_saving_colors__                                                                      \
             }                                                                                                   \
         }
 
 
-    uint64_t CalcMandelbrotWithTime(MandelbrotInfo* data)
-    {
-        uint64_t sum_time = 0;
-        CALC_AND_ADD_CODE(uint64_t start_time = __rdtsc();, sum_time += __rdtsc() - start_time;)
-        return sum_time;
-    }
-
-
     void CalcMandelbrotWithColors(MandelbrotInfo* data)
     {
-        CALC_AND_ADD_CODE({}, {memcpy(data->arr_iters + y*data->window_width + x, &iters, sizeof(__m256i));})
+        CALC_AND_ADD_CODE({memcpy(data->arr_iters + y*data->window_width + x, &iters, sizeof(__m256i));})
     }
 #endif //CALC_INTR256_OPT
+
+
+void CalcMandelbrotNoColors(volatile MandelbrotInfo* data)
+{
+    CALC_AND_ADD_CODE({})
+}

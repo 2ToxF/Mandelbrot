@@ -1,8 +1,12 @@
+#include <immintrin.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #include "global_consts.h"
 #include "mandelbrot.h"
 #include "tests.h"
+
+static uint64_t CalcMandelbrotTime(MandelbrotInfo* data);
 
 
 void RunTestsMandelbrot(int tests_number)
@@ -16,5 +20,15 @@ void RunTestsMandelbrot(int tests_number)
 
     printf("%d\n", tests_number);
     for (int i = 0; i < tests_number; ++i)
-        printf("%lu\n", CalcMandelbrotWithTime(&data));
+        printf("%lu\n", CalcMandelbrotTime(&data));
+}
+
+
+static uint64_t CalcMandelbrotTime(MandelbrotInfo* data)
+{
+    uint64_t start_time = __rdtsc();
+    CalcMandelbrotNoColors(data);
+    uint64_t end_time = __rdtsc();
+
+    return end_time - start_time;
 }

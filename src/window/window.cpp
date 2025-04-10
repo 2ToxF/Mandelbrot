@@ -19,7 +19,7 @@ const int           MICROSEC_TO_SEC         = 1000000;
 
 static void     CheckEvents         (sf::RenderWindow* window, MandelbrotInfo* data);
 static void     DrawDots            (sf::Image* image, int* arr_iters);
-static double   GetMandelbrotTime   (MandelbrotInfo* data, void (*CalcMandelbrotFunc)(MandelbrotInfo* data));
+static double   GetMandelbrotTime   (MandelbrotInfo* data);
 static void     ZoomDown            (MandelbrotInfo* data);
 static void     ZoomUp              (MandelbrotInfo* data);
 
@@ -96,7 +96,7 @@ void DrawMandelbrot()
     {
         CheckEvents(&window, &data);
 
-        double fps = GetMandelbrotTime(&data, CalcMandelbrotWithColors);
+        double fps = GetMandelbrotTime(&data);
         printf("%lf\n", fps);
 
         DrawDots(&image, data.arr_iters);
@@ -116,12 +116,12 @@ void DrawMandelbrot()
 }
 
 
-static double GetMandelbrotTime(MandelbrotInfo* data, void (*CalcMandelbrotFunc)(MandelbrotInfo* data))
+static double GetMandelbrotTime(MandelbrotInfo* data)
 {
     struct timeval start_time = {};
     gettimeofday(&start_time, NULL);
 
-    CalcMandelbrotFunc(data);
+    CalcMandelbrotWithColors(data);
 
     struct timeval end_time = {};
     gettimeofday(&end_time, NULL);
