@@ -6,9 +6,8 @@ def CalcAverageFromFile(file_name, message):
     average = sum(test_results) / tests_number
     variance = sum(map(lambda x: (x - average)**2, test_results)) / tests_number
     deviation = variance**0.5
-    deviation_x3 = deviation * 3
 
-    filtered_arr = list(filter(lambda x: x - average <= deviation_x3, test_results))
+    filtered_arr = list(filter(lambda x: x - average <= deviation * 3, test_results))
     filtered_arr_len = len(filtered_arr)
 
     filetered_average = sum(filtered_arr) / filtered_arr_len
@@ -31,10 +30,14 @@ CalcAverageFromFile("tests_res/flags_opt_Ofast.txt", "С оптимизацие�
 
 print("\n\n")
 
-CalcAverageFromFile("tests_res/gcc_arr_opt.txt", "С оптимизацией на массиве (gcc):")
-CalcAverageFromFile("tests_res/clang_arr_opt.txt", "С оптимизацией на массиве (clang):")
+CalcAverageFromFile("tests_res/gcc_arr_opt_O0.txt", "С оптимизацией на массиве [gcc, -O0]:")
+CalcAverageFromFile("tests_res/gcc_arr_opt_O1.txt", "С оптимизацией на массиве [gcc, -O1]:")
+CalcAverageFromFile("tests_res/gcc_arr_opt_O3.txt", "С оптимизацией на массиве [gcc, -O3]:")
+CalcAverageFromFile("tests_res/clang_arr_opt_O0.txt", "С оптимизацией на массиве [clang, -O0]:")
+CalcAverageFromFile("tests_res/clang_arr_opt_O1.txt", "С оптимизацией на массиве [clang, -O1]:")
+CalcAverageFromFile("tests_res/clang_arr_opt_O3.txt", "С оптимизацией на массиве [clang, -O3]:")
 
 print("\n\n")
 
-CalcAverageFromFile("tests_res/intr128_opt.txt", "С использованием intrinsic-функций (mm128):")
-CalcAverageFromFile("tests_res/intr256_opt.txt", "С использованием intrinsic-функций (mm256):")
+CalcAverageFromFile("tests_res/intr128_opt.txt", "С использованием intrinsics [m128]:")
+CalcAverageFromFile("tests_res/intr256_opt.txt", "С использованием intrinsics [m256]:")
