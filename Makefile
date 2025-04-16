@@ -31,7 +31,7 @@ $(OBJ_DIRS): %:
 	@mkdir $@
 
 run: $(BIN)
-	@./$(BIN) $(run_flags)
+	@./$(BIN)
 
 
 clean: clean_obj clean_bin

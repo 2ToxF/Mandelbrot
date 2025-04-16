@@ -1,6 +1,6 @@
 #ifndef TESTS_H
 #define TESTS_H
 
-void RunTestsMandelbrot(int tests_number);
+void RunTestsMandelbrot();
 
 #endif //TESTS_H

@@ -121,7 +121,7 @@ static double GetMandelbrotTime(MandelbrotInfo* data)
     struct timeval start_time = {};
     gettimeofday(&start_time, NULL);
 
-    CalcMandelbrotWithColors(data);
+    CalcMandelbrot(data);
 
     struct timeval end_time = {};
     gettimeofday(&end_time, NULL);

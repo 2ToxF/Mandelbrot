@@ -17,7 +17,6 @@ typedef struct __MandelbrotInfo
     int* arr_iters;
 } MandelbrotInfo;
 
-void CalcMandelbrotNoColors     (volatile MandelbrotInfo* data);
-void CalcMandelbrotWithColors   (MandelbrotInfo* data);
+void CalcMandelbrot(volatile MandelbrotInfo* data);
 
 #endif //MANDELBROT_H
