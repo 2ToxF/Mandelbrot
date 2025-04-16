@@ -16,10 +16,10 @@ def CalcAverageFromFile(file_name, message):
     error = filtered_deviation / (filtered_arr_len**0.5)
 
     print(f"{message}\n"
-            f"Среднее время выполнения (в тиках): {round(filetered_average, 2)} +- "
-            f"{round(error, 2)} (стандартная ошибка среднего)\n"
-            f"Среднеквадратичное отклонение: {round(filtered_deviation, 2)}\n"
-            f"Погрешность измерений: {round(error / filetered_average, 4) * 100}%\n")
+          f"Среднее время выполнения (в тиках): {filetered_average:.2f} +- "
+          f"{error:.2f} (стандартная ошибка среднего)\n"
+          f"Среднеквадратичное отклонение: {filtered_deviation:.2f}\n"
+          f"Погрешность измерений: {error / filetered_average * 100:.2f}%\n")
 
 
 CalcAverageFromFile("tests_res/flags_opt_O0.txt",    "Без оптимизации [-O0]:")
