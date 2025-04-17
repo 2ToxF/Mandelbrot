@@ -7,7 +7,7 @@ def CalcAverageFromFile(file_name, message):
     variance = sum(map(lambda x: (x - average)**2, test_results)) / tests_number
     deviation = variance**0.5
 
-    filtered_arr = list(filter(lambda x: x - average <= deviation * 3, test_results))
+    filtered_arr = list(filter(lambda x: abs(x - average) <= deviation * 3, test_results))
     filtered_arr_len = len(filtered_arr)
 
     filetered_average = sum(filtered_arr) / filtered_arr_len
