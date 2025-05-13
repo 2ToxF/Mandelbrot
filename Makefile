@@ -1,5 +1,5 @@
 CC 				:= 	$(compiler)
-FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2 \
+FLAGS	 		:= 	-Wall -Wextra -Wpedantic -fpermissive -mavx2
 
 MAIN_SRC_DIR	:= src
 SRC_DIRS		:= $(shell find $(MAIN_SRC_DIR)/ -type d)
